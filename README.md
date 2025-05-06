@@ -11,7 +11,7 @@ This project demonstrates the implementation of parallel search and sorting algo
   * Prime Number Finding
   * Bitonic Sort
   * Radix Sort
-  * Sample Sort (Bonus)
+  * Sample Sort
 * Dynamic input loading via text files
 * Output sorted results to file (for sorting algorithms)
 * Performance measured using `MPI_Wtime()`
@@ -131,7 +131,7 @@ Output file content:
 5 12 21 33 41 50 56 69 87 90
 ```
 
-### 🧪 05 - Sample Sort (Bonus)
+### 🧪 05 - Sample Sort
 ```sql
 ------------------------------
 Sample Sort Selected
