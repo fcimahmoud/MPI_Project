@@ -45,6 +45,7 @@ void runQuickSearch(int rank, int size) {
         }
 
         cout << "Reading data from file... Total elements: " << fullData.size() << endl;
+        cout << "Reading data completed successfully: ";
         for (auto &&i : fullData)
         {
             cout << i << " ";

@@ -53,6 +53,8 @@ void runPrimeFinder(int rank, int size) {
 
     // Gather prime counts from all processes
     int localCount = static_cast<int>(localPrimes.size());
+    cout << "[Process " << rank << "] Found " << localCount << " primes\n";
+    
     vector<int> allCounts(size);
     MPI_Gather(&localCount, 1, MPI_INT, allCounts.data(), 1, MPI_INT, 0, MPI_COMM_WORLD);
 
@@ -74,6 +76,8 @@ void runPrimeFinder(int rank, int size) {
     // Master prints the result
     if (rank == 0) {
         cout << "Prime numbers in range [" << low << ", " << high << "]:\n";
+        cout << "Total primes found: " << totalPrimes << "\n";
+        cout << "Primes: ";
         for (int prime : allPrimes) {
             cout << prime << " ";
         }
@@ -81,6 +85,8 @@ void runPrimeFinder(int rank, int size) {
 
         ofstream outFile("output_primefinder.txt");
         outFile << "Prime numbers in range [" << low << ", " << high << "]:\n";
+        outFile << "Total primes found: " << totalPrimes << "\n";
+        outFile << "Primes: ";
         for (int prime : allPrimes)
             outFile << prime << " ";
         outFile.close();

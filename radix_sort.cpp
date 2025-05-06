@@ -96,6 +96,7 @@ void runRadixSort(int rank, int size) {
         }
         sort(finalSorted.begin(), finalSorted.end());
 
+        cout << "Sorted Data: ";
         for (auto &&i : finalSorted)
         {
             cout << i << " ";

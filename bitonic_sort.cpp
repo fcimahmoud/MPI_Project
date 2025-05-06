@@ -95,6 +95,7 @@ void runBitonicSort(int rank, int size) {
                 0, MPI_COMM_WORLD);
 
     if (rank == 0) {
+        cout << "Sorted Data: ";
         for (auto &&i : sortedData)
         {
             cout << i << " ";
