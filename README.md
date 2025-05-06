@@ -1,6 +1,6 @@
 # Parallel Search and Sorting Algorithms with MPI
 
-This project demonstrates the implementation of parallel search and sorting algorithms using **MPI (Message Passing Interface)** in C++. It showcases efficient distributed algorithm design and performance analysis through practical, hands-on simulations.
+This project demonstrates the implementation of parallel search and sorting algorithms using **MPI (Message Passing Interface)** in C++.
 
 ## 📌 Features
 
@@ -14,12 +14,11 @@ This project demonstrates the implementation of parallel search and sorting algo
   * Sample Sort
 * Dynamic input loading via text files
 * Output sorted results to file (for sorting algorithms)
-* Performance measured using `MPI_Wtime()`
 
 ## 🧰 Prerequisites
 
-* **Microsoft MPI** (or any MPI implementation)
-* **g++** compiler (MinGW or equivalent for Windows)
+* **Microsoft MPI**
+* **g++** compiler (MinGW)
 
 ## 🚀 Compilation and Execution (Windows)
 
@@ -41,7 +40,7 @@ mpiexec -n 4 a.exe
 
 Each algorithm reads from a plain `.txt` file:
 
-* **Quick Search / Sorting:** One number per line
+* **Quick Search / Sorting:** All numbers on one line seperated by space
 * **Prime Finder:** Enter start and end range via CLI
 
 Example for input file:
@@ -159,13 +158,6 @@ Output file content:
 - input_*.txt
 - output_*.txt
 ```
-
-## 📈 Performance
-
-Performance analysis is included in the documentation:
-
-* Speedup and efficiency with varying process counts and data sizes
-* Comparison of communication overheads
 
 ## 📎 License
 
