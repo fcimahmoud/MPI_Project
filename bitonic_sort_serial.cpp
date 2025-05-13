@@ -1,7 +1,8 @@
 #include <iostream>
 #include <vector>
 #include <algorithm>
-
+#include <fstream>
+#include "mpi.h"
 using namespace std;
 
 // Swap two elements depending on the direction
@@ -39,8 +40,23 @@ void bitonicSort(vector<int>& arr, int low, int count, bool ascending) {
     }
 }
 
-int main() {
-    vector<int> data = {23, 10, 7, 9, 18, 2, 1, 5};
+int main(int argc, char** argv) {
+    MPI_Init(&argc, &argv);
+    vector<int> data;
+
+        cout << "Please enter the path to the input file: ";
+        string filePath;
+        cin >> filePath;
+
+        ifstream file(filePath);
+        int num;
+        while (file >> num) {
+            data.push_back(num);
+        }
+
+    double startTime = 0.0, endTime = 0.0;
+    // C++ Function to get time
+    startTime = MPI_Wtime();
 
     // Make sure size is a power of 2
     int n = data.size();
@@ -49,15 +65,20 @@ int main() {
         return 1;
     }
 
-    cout << "Original array:\n";
-    for (int num : data) cout << num << " ";
-    cout << endl;
+    // cout << "Original array:\n";
+    // for (int num : data) cout << num << " ";
+    // cout << endl;
 
     bitonicSort(data, 0, n, true);  // true for ascending
 
+    endTime = MPI_Wtime();
+    double elapsed = endTime - startTime;
+    cout << "Execution Time: " << elapsed << " seconds\n";
+    cout << "------------------------------\n";
     cout << "Sorted array:\n";
-    for (int num : data) cout << num << " ";
+    //for (int num : data) cout << num << " ";
     cout << endl;
 
+    MPI_Finalize();
     return 0;
 }

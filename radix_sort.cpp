@@ -16,6 +16,8 @@ void runRadixSort(int rank, int size) {
     vector<int> data;
     int totalSize = 0;
 
+    double startTime = 0.0, endTime = 0.0;
+
     if (rank == 0) {
         cout << "------------------------------\n";
         cout << "Radix Sort Selected\n";
@@ -34,6 +36,10 @@ void runRadixSort(int rank, int size) {
         cout << "Reading data from file... Total elements: " << totalSize << endl;
     }
 
+    // Start timing after broadcasting input and before processing
+    MPI_Barrier(MPI_COMM_WORLD);  // Ensure all processes are synced before timing
+    startTime = MPI_Wtime();
+
     MPI_Bcast(&totalSize, 1, MPI_INT, 0, MPI_COMM_WORLD);
 
     // Distribute data initially
@@ -46,13 +52,7 @@ void runRadixSort(int rank, int size) {
         displs[i] = displs[i - 1] + counts[i - 1];
 
     vector<int> localData(counts[rank]);
-    
-    /*  
-    MPI_Scatterv is a function in the MPI (Message Passing Interface) library that 
-    distributes varying amounts of data from a root process to all processes in a communicator. 
-    It allows specifying different send counts and displacements for each process, 
-    supporting flexible data distribution patterns.
-    */
+
     MPI_Scatterv(data.data(), counts.data(), displs.data(), MPI_INT,
                     localData.data(), counts[rank], MPI_INT, 0, MPI_COMM_WORLD);
 
@@ -152,22 +152,19 @@ void runRadixSort(int rank, int size) {
         for (int i = 1; i < size; ++i)
         finalDispls[i] = finalDispls[i - 1] + finalCounts[i - 1];
     }
-    
-    /*
-    MPI_Gatherv function is part of the Message Passing Interface (MPI) library and 
-    gathers variable amounts of data from all processes in a communicator to a root process. 
-    It allows each process to send a specified number of elements (sendcount) of a given type (sendtype), 
-    which are then stored in the root process's receive buffer (recvbuf) according to 
-    the recvcounts and displs arrays, using the specified recvtype.
-    */
+
     MPI_Gatherv(localData.data(), localSize, MPI_INT,
                 finalSorted.data(), finalCounts.data(), finalDispls.data(), MPI_INT,
                 0, MPI_COMM_WORLD);
 
+    // End timing after computation and reduction
+    MPI_Barrier(MPI_COMM_WORLD);
+    endTime = MPI_Wtime();
+
     if (rank == 0) {
-        cout << "Sorted Data: ";
-        for (int num : finalSorted) cout << num << " ";
-        cout << endl;
+        double elapsed = endTime - startTime;
+        cout << "Execution Time with " << size << " process(es): " << elapsed << " seconds\n";
+        cout << "------------------------------\n";
 
         ofstream outFile("output_radixsort.txt");
         for (int num : finalSorted)

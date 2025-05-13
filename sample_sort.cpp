@@ -21,6 +21,8 @@ void runSampleSort(int rank, int size) {
     vector<int> data;
     int totalSize = 0;
 
+    double startTime = 0.0, endTime = 0.0;
+
     if (rank == 0) {
         cout << "------------------------------\n";
         cout << "Sample Sort Selected\n";
@@ -37,6 +39,10 @@ void runSampleSort(int rank, int size) {
         totalSize = data.size();
         cout << "Reading data from file... Total elements: " << totalSize << endl;
     }
+
+    // Start timing after broadcasting input and before processing
+    MPI_Barrier(MPI_COMM_WORLD);  // Ensure all processes are synced before timing
+    startTime = MPI_Wtime();
 
     MPI_Bcast(&totalSize, 1, MPI_INT, 0, MPI_COMM_WORLD);
 
@@ -131,12 +137,14 @@ void runSampleSort(int rank, int size) {
                 finalResult.data(), finalCounts.data(), finalDispls.data(), MPI_INT,
                 0, MPI_COMM_WORLD);
 
+    // End timing after computation and reduction
+    MPI_Barrier(MPI_COMM_WORLD);
+    endTime = MPI_Wtime();
+
     if (rank == 0) {
-        cout << "Sorted Data: ";
-        for (auto &&i : finalResult)
-        {
-            cout << i << " ";
-        }cout << endl;
+        double elapsed = endTime - startTime;
+        cout << "Execution Time with " << size << " process(es): " << elapsed << " seconds\n";
+        cout << "------------------------------\n";
 
         ofstream out("output_samplesort.txt");
         for (int num : finalResult) out << num << " ";

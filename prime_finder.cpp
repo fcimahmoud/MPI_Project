@@ -20,6 +20,8 @@ bool isPrime(int n) {
 void runPrimeFinder(int rank, int size) {
     int low = 0, high = 0;
 
+    double startTime = 0.0, endTime = 0.0;
+
     if (rank == 0) {
         cout << "------------------------------\n";
         cout << "Prime Number Finding Selected\n";
@@ -29,6 +31,10 @@ void runPrimeFinder(int rank, int size) {
         cout << "Enter the upper bound of the range: ";
         cin >> high;
     }
+
+    // Start timing after broadcasting input and before processing
+    MPI_Barrier(MPI_COMM_WORLD);  // Ensure all processes are synced before timing
+    startTime = MPI_Wtime();
 
     // Broadcast the range to all processes
     MPI_Bcast(&low, 1, MPI_INT, 0, MPI_COMM_WORLD);
@@ -73,8 +79,16 @@ void runPrimeFinder(int rank, int size) {
                 allPrimes.data(), allCounts.data(), displacements.data(), MPI_INT,
                 0, MPI_COMM_WORLD);
 
+    // End timing after computation and reduction
+    MPI_Barrier(MPI_COMM_WORLD);
+    endTime = MPI_Wtime();
+
     // Master prints the result
     if (rank == 0) {
+        double elapsed = endTime - startTime;
+        cout << "Execution Time with " << size << " process(es): " << elapsed << " seconds\n";
+        cout << "------------------------------\n";
+
         cout << "Prime numbers in range [" << low << ", " << high << "]:\n";
         cout << "Total primes found: " << totalPrimes << "\n";
         cout << "Primes: ";
